@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Sentence Recognition | Case 1 - Right Aided Condition</title>
+<style>
+:root{--ink:#16263b;--muted:#62728a;--line:#dfe6ee;--blue:#195d9d;--green:#0b714b;--paper:#f5f8fc}*{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.5 system-ui,-apple-system,Segoe UI,sans-serif}header{background:#132d4a;color:white;padding:20px max(20px,calc((100% - 1200px)/2))}h1{margin:0;font-size:1.5rem}header p{color:#d4e4f5;margin:4px 0 0}.layout{max-width:1200px;margin:20px auto;padding:0 16px;display:grid;grid-template-columns:minmax(300px,430px) minmax(0,1fr);gap:22px}.panel{background:white;border:1px solid var(--line);border-radius:14px;padding:18px;box-shadow:0 4px 22px #213b5610}.left{align-self:start;position:sticky;top:14px}.video{width:min(100%,290px);height:auto;aspect-ratio:9/16;object-fit:contain;background:#07111d;border-radius:9px;display:block;margin:0 auto}.hint{font-size:.9rem;color:var(--muted)}.stats{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin:16px 0}.stat{background:#eff5fb;padding:12px;border-radius:9px}.stat strong{display:block;font-size:1.4rem}.stat span{font-size:.81rem;color:var(--muted)}.buttons{display:flex;gap:9px;flex-wrap:wrap}button{font:inherit;cursor:pointer}button.action{border:1px solid #bdcfdf;background:#fff;border-radius:9px;padding:9px 13px;color:var(--ink)}button.action.primary{background:var(--blue);border-color:var(--blue);color:white}.headline{display:flex;justify-content:space-between;align-items:baseline;gap:15px;flex-wrap:wrap}h2{margin:0;font-size:1.2rem}.progress{background:#e6edf5;height:8px;border-radius:20px;overflow:hidden;margin:12px 0 20px}.progress>div{height:100%;background:var(--green);width:0;transition:width .15s}.sentence{padding:15px 0;border-top:1px solid var(--line)}.sentence-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:11px}.sentence-head b{font-size:.92rem}.count{font-variant-numeric:tabular-nums;font-size:.9rem;color:var(--muted)}.words{display:flex;flex-wrap:wrap;gap:8px}.word{min-height:43px;border:1px solid #bcc8d6;border-radius:8px;background:#f4f7fa;color:#35485f;padding:8px 11px;transition:background .1s}.word[aria-pressed=true]{background:#daf4e8;color:#09583b;border-color:#74c9a4;font-weight:650}.word:hover,.word:focus-visible{outline:2px solid #5695d3;outline-offset:1px}.foot{font-size:.82rem;color:var(--muted);margin-top:12px}#file{display:none}@media(max-width:800px){.layout{display:block}.left{position:static;margin-bottom:18px}.panel{margin-bottom:16px}}@media print{header,.left,.buttons{display:none!important}.layout{display:block}.panel{box-shadow:none;border:0}.word{min-height:auto}}
+
+/* Expandable audiometer channel settings */
+.workspace{max-width:1580px;margin:0 auto;display:grid;grid-template-columns:268px minmax(0,1fr);gap:15px;padding:16px}
+.workspace>.layout{min-width:0;max-width:none;margin:0;padding:0;grid-template-columns:minmax(250px,390px) minmax(330px,1fr);gap:15px}
+.audiometer-side{align-self:start;position:sticky;top:14px;background:#e5ecfa;border:1px solid #87a7e3;border-radius:10px;overflow:hidden;font-size:12px;box-shadow:0 3px 15px #2439550d}
+.audio-toggle{border:0;width:100%;text-align:left;background:#f5f7ff;color:#2b60aa;font-size:14px;font-weight:750;padding:10px 12px;display:flex;align-items:center;justify-content:space-between;cursor:pointer}
+.audio-toggle:focus-visible{outline:3px solid #2a65cb;outline-offset:-3px}
+.audio-toggle .chevron{font-size:16px}
+.audio-body{padding:8px 6px 10px}
+.channel-head,.setting-row{display:grid;grid-template-columns:minmax(0,1fr) 34px 34px;align-items:center;min-height:21px}
+.channel-head{font-weight:700;border-bottom:1px solid white;padding-bottom:3px}
+.channel-head span:nth-child(n+2){text-align:center;font-size:14px}
+.setting-title{margin:8px 0 2px;padding:2px 4px;border-bottom:2px solid white;font-weight:800;font-size:11px;color:#253750}
+.setting-row .setting-label{text-align:right;padding-right:9px;color:#233b58;font-size:11px;line-height:1.15}
+.setting-row label{display:flex;align-items:center;justify-content:center;cursor:pointer;min-height:22px}
+.setting-row input{margin:0;accent-color:#247f65;width:17px;height:17px;cursor:pointer}
+.setting-row label:focus-within{outline:2px solid #2c70cb;border-radius:4px}
+.channel-subtitle{padding:10px 6px 4px;margin-top:8px;border-top:2px solid white;font-size:12px;font-weight:800;color:#215b9d}
+.level-row{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+.level-card{background:#f7faff;border:1px solid #b9c9e6;border-radius:9px;padding:8px 5px;text-align:center}
+.level-card .channel-name{font-size:11px;font-weight:750;color:#304561}
+.level-card output{display:block;font-weight:800;font-size:21px;font-variant-numeric:tabular-nums;color:#164b85;margin:2px auto}
+.level-card .db-unit{font-size:10px;color:#64758a}
+.level-actions{display:flex;justify-content:center;gap:6px;margin-top:7px}
+.level-actions button{border:1px solid #8fa8ca;background:#fff;color:#1d4a7e;border-radius:7px;width:34px;height:34px;font-weight:800;font-size:18px;cursor:pointer}
+.level-actions button:disabled{opacity:.4;cursor:not-allowed}
+.level-actions button:focus-visible{outline:2px solid #186ab3;outline-offset:2px}
+.current-audio{margin:9px 4px 0;font-size:10.5px;line-height:1.4;color:#586779}
+.workspace.audio-collapsed{grid-template-columns:48px minmax(0,1fr)}
+.audio-collapsed .audio-toggle{padding:9px 3px;writing-mode:vertical-rl;min-height:164px;justify-content:flex-start;gap:8px}
+.audio-collapsed .audio-toggle .chevron{writing-mode:horizontal-tb}
+.audio-collapsed .audiometer-side{width:48px}
+@media(max-width:1100px){.workspace{grid-template-columns:235px minmax(0,1fr)}.workspace>.layout{grid-template-columns:minmax(0,1fr)}.workspace>.layout .left{position:static}}
+@media(max-width:680px){.workspace,.workspace.audio-collapsed{display:block;padding:10px}.audiometer-side,.audio-collapsed .audiometer-side{position:static;width:auto;margin-bottom:12px}.audio-collapsed .audio-toggle{writing-mode:initial;min-height:unset;padding:10px 12px;display:flex;justify-content:space-between}.workspace>.layout{display:block}}
+@media print{.audiometer-side{display:none!important}.workspace,.workspace.audio-collapsed{display:block;padding:0}.workspace>.layout{display:block}}
+
+.reference-note{margin:3px 4px 12px;padding:9px;background:#f9fcff;border:1px solid #b7c8e6;border-radius:7px;color:#243e60;font-size:11px;line-height:1.5}
+.list-label{display:block;margin:3px 5px;font-size:11px;color:#243e60}
+.wordlist-select{width:calc(100% - 10px);margin:0 5px 4px;padding:7px 8px;font-size:12px;border-radius:6px;border:1px solid #9bb4dc;background:#fff;color:#1a3558}
+.video-wrap{position:relative;width:min(100%,290px);margin:auto;aspect-ratio:9/16;background:#07111d;border-radius:9px;overflow:hidden}
+.video-wrap .video{width:100%;height:100%;max-height:100%;margin:0}
+.video-locked{position:absolute;inset:0;background:#0b1929cf;color:#fff;display:flex;align-items:center;justify-content:center;flex-direction:column;text-align:center;gap:8px;padding:14px;pointer-events:all}
+.video-locked[hidden]{display:none!important}
+.video-locked span{font-size:12px;color:#d8e7f7}
+.lock-state{padding:9px 11px;border-radius:7px;background:#fff3de;color:#714c09;font-size:12px;font-weight:650;margin:10px 0}
+.lock-state.ready{background:#e0f5e9;color:#09613b}
+.enter-settings{display:block;width:calc(100% - 10px);margin:14px 5px 6px;padding:11px 8px;border:0;border-radius:7px;background:#1b5da1;color:white;font-weight:800;letter-spacing:.08em;cursor:pointer}.enter-settings:hover{background:#12477e}.enter-settings:focus-visible{outline:3px solid #e7ac40;outline-offset:2px}.settings-feedback{margin:4px 5px 10px;font-size:11px;line-height:1.45;color:#694c13}.settings-feedback.accepted{color:#09613b;font-weight:700}
+</style></head><body><header><h1>Sentence Recognition Scoring</h1><p>Case 1 - Right Aided Condition · List 5 · Sentence scoring</p></header><div class="workspace" id="workspace"><aside class="audiometer-side" aria-label="Audiometer channel control panel">
+<button class="audio-toggle" id="audioToggle" type="button" aria-expanded="true" aria-controls="audioBody"><span>Channel Settings</span><span class="chevron" aria-hidden="true">‹</span></button>
+<div id="audioBody" class="audio-body">
+<p class="reference-note"><strong>Right aided condition:</strong> Person 1 meter from the right speaker = <strong>64 dB</strong>. Configure both channels for a <strong>+10 dB SNR</strong>. Choose the word list and configure both channels, then press <strong>ENTER</strong> to check your settings and unlock the video.</p>
+<div class="channel-head"><span>CHANNEL</span><span>1</span><span>2</span></div>
+<div id="controlGroups"></div>
+<div class="channel-subtitle">WORD LIST</div><label class="list-label" for="azBioList">Select test list</label><select id="azBioList" class="wordlist-select" aria-label="Select word list"><option value="" selected> </option><option value="azbio5">AZ Bio List 5</option></select>
+<div class="channel-subtitle">CHANNEL LEVELS</div>
+<div class="level-row"><div class="level-card"><div class="channel-name">Channel 1</div><output id="level1" aria-live="polite">50</output><div class="db-unit">dB HL</div><div class="level-actions"><button type="button" data-ch="1" data-change="-1" aria-label="Decrease Channel 1 level">−</button><button type="button" data-ch="1" data-change="1" aria-label="Increase Channel 1 level">+</button></div></div><div class="level-card"><div class="channel-name">Channel 2</div><output id="level2" aria-live="polite">50</output><div class="db-unit">dB HL</div><div class="level-actions"><button type="button" data-ch="2" data-change="-1" aria-label="Decrease Channel 2 level">−</button><button type="button" data-ch="2" data-change="1" aria-label="Increase Channel 2 level">+</button></div></div></div>
+<button type="button" id="validateSettings" class="enter-settings">ENTER</button>
+<p id="settingsFeedback" class="settings-feedback" role="status" aria-live="polite">Select the test list and channel settings, then press ENTER to check your setup.</p>
+<p class="current-audio">Simulator controls only: these selections and dB HL indicators do not alter the MP4 recording or output calibrated audiometer stimuli.</p>
+</div></aside><main class="layout"><aside class="panel left"><div class="video-wrap"><video id="patientVideo" class="video" preload="metadata" playsinline><source src="Case1_R_Santa.mp4" type="video/mp4">Your browser does not support MP4 playback.</video><div id="videoLocked" class="video-locked" role="status" aria-live="polite"><strong>Video locked</strong><span>Select the test list, configure both channels, and press ENTER to unlock playback.</span></div></div><p class="lock-state" id="lockStatus" role="status" aria-live="polite">Video locked — press ENTER after configuring the controls.</p><p class="hint">Play the recording and select each word you hear the patient repeat correctly. Select it again to undo.</p><div class="stats"><div class="stat"><strong id="score">0%</strong><span>Overall percent correct</span></div><div class="stat"><strong id="correct">0 / 0</strong><span>Words correct / possible</span></div></div><div class="stats"><div class="stat"><strong id="completed">0 / 20</strong><span>Sentences reviewed</span></div><div class="stat"><strong id="notCorrect">0</strong><span>Words not marked correct</span></div></div><div class="buttons"><button class="action primary" id="export">View scoring report</button><button class="action" id="reset">Reset scoring</button></div><p class="foot">Scores remain in this browser only. Results are not sent to the instructor automatically. Open the scoring report to print or save a PDF of your results.</p></aside><section class="panel"><div class="headline"><h2>Score Sheet</h2><span class="hint" id="totalPossible"></span></div><p class="hint">Tap or click a word to mark it <strong>correct</strong> (green). Unselected words count as <strong>incorrect</strong>. Sentence and overall percentages use all possible words as the denominator.</p><div class="progress"><div id="bar"></div></div><div id="sentences"></div></section></main></div><script>
+
+// Two fully independent channel-setting groups. The panel is a visual simulator; no MP4 audio processing.
+const controlDefinitions=[
+  {name:'Stimulus',key:'stimulus',options:[['continuous','Continuous'],['pure','Pure tone'],['warble','Warble'],['nbn','NBN'],['speech','Speech']]},
+  {name:'Transducer',key:'transducer',options:[['insert','Insert'],['headphones','Headphones'],['bone','Bone'],['soundfield','Sound field']]},
+  {name:'Masking',key:'masking',options:[['off','Off'],['nbn','NBN'],['speechnoise','Speech noise'],['whitenoise','White noise']]},
+  {name:'Routing',key:'routing',options:[['left','Left'],['right','Right'],['binaural','Binaural']]},
+  {name:'Level step',key:'step',options:[['5','5 dB'],['2','2 dB'],['1','1 dB']]}
+];
+const channels={1:{stimulus:'pure',transducer:'insert',masking:'off',routing:'left',step:'5',level:50},2:{stimulus:'nbn',transducer:'insert',masking:'off',routing:'right',step:'5',level:50}};
+const groupRoot=document.getElementById('controlGroups');
+controlDefinitions.forEach(group=>{
+  let title=document.createElement('div');title.className='setting-title';title.textContent=group.name.toUpperCase();groupRoot.append(title);
+  for(const [value,label] of group.options){
+    const row=document.createElement('div');row.className='setting-row';
+    const name=document.createElement('span');name.className='setting-label';name.textContent=label;row.append(name);
+    for(const ch of [1,2]){
+      const wrapper=document.createElement('label');
+      const input=document.createElement('input');input.type='radio';input.name=`ch${ch}-${group.key}`;input.value=value;input.checked=channels[ch][group.key]===value;
+      input.setAttribute('aria-label',`Channel ${ch}: ${group.name}, ${label}`);
+      input.addEventListener('change',()=>{channels[ch][group.key]=value;feedback.textContent='Settings changed. Press ENTER to check again.';feedback.classList.remove('accepted');refreshLevels()});
+      wrapper.append(input);row.append(wrapper);
+    }
+    groupRoot.append(row);
+  }
+});
+function refreshLevels(){
+ for(const ch of [1,2]){
+  document.getElementById(`level${ch}`).textContent=channels[ch].level;
+  document.querySelectorAll(`[data-ch="${ch}"]`).forEach(button=>{const direction=Number(button.dataset.change);button.disabled=direction<0?channels[ch].level<=-10:channels[ch].level>=120;});
+ }
+ updateVideoGate();
+
+}
+document.querySelectorAll('.level-actions button').forEach(button=>button.addEventListener('click',()=>{
+ const ch=Number(button.dataset.ch),direction=Number(button.dataset.change);
+ feedback.textContent='Settings changed. Press ENTER to check again.';feedback.classList.remove('accepted');
+ channels[ch].level=Math.max(-10,Math.min(120,channels[ch].level+direction*Number(channels[ch].step)));
+ refreshLevels();
+}));
+const video=document.getElementById('patientVideo');
+const videoLocked=document.getElementById('videoLocked');
+const lockStatus=document.getElementById('lockStatus');
+const listSelector=document.getElementById('azBioList');
+function settingsAreValid(){
+ return listSelector.value==='azbio5'
+   && [1,2].every(ch=>channels[ch].stimulus==='speech' && channels[ch].transducer==='soundfield' && channels[ch].routing==='right')
+   && channels[1].level===64 && channels[2].level===54;
+}
+let settingsConfirmed=false;
+const feedback=document.getElementById('settingsFeedback');
+function updateVideoGate(){
+ // Any changes after confirmation require another press of ENTER.
+ settingsConfirmed=false;
+ applyVideoGate();
+}
+function applyVideoGate(){
+ const valid=settingsConfirmed && settingsAreValid();
+ if(!valid && !video.paused)video.pause();
+ video.controls=valid;
+ videoLocked.hidden=valid;
+ lockStatus.textContent=valid?'Settings accepted — video unlocked.':'Video locked — set both channels and press ENTER.';
+ lockStatus.classList.toggle('ready',valid);
+}
+document.getElementById('validateSettings').addEventListener('click',()=>{
+ settingsConfirmed=settingsAreValid();
+ feedback.textContent=settingsConfirmed?'Settings correct. Video unlocked. You can now press Play.':'Settings not correct. Review the test list, both channels, and levels, then press ENTER again.';
+ feedback.classList.toggle('accepted',settingsConfirmed);
+ applyVideoGate();
+});
+listSelector.addEventListener('change',()=>{feedback.textContent='Settings changed. Press ENTER to check again.';feedback.classList.remove('accepted');updateVideoGate();});
+video.addEventListener('play',()=>{if(!settingsConfirmed || !settingsAreValid())video.pause();});
+refreshLevels();
+const toggle=document.getElementById('audioToggle'),body=document.getElementById('audioBody');
+toggle.addEventListener('click',()=>{
+ const expanded=toggle.getAttribute('aria-expanded')==='true';
+ toggle.setAttribute('aria-expanded',String(!expanded));body.hidden=expanded;
+ document.getElementById('workspace').classList.toggle('audio-collapsed',expanded);
+ toggle.querySelector('.chevron').textContent=expanded?'›':'‹';
+});
+
+const sentences=[{"id": 1, "words": ["He", "got", "five", "ulcers", "trying", "to", "retire", "before", "forty."]}, {"id": 2, "words": ["The", "flying", "monkeys", "aimed", "to", "capture", "her."]}, {"id": 3, "words": ["The", "office", "smelled", "like", "popcorn."]}, {"id": 4, "words": ["There", "was", "still", "so", "much", "to", "do."]}, {"id": 5, "words": ["The", "bread", "is", "stale."]}, {"id": 6, "words": ["I", "don't", "appreciate", "your", "candor."]}, {"id": 7, "words": ["I'm", "not", "sure", "it's", "due", "to", "a", "thyroid", "problem."]}, {"id": 8, "words": ["Where's", "the", "beef?"]}, {"id": 9, "words": ["Are", "you", "going", "to", "find", "out", "the", "sex", "of", "the", "baby?"]}, {"id": 10, "words": ["I", "don't", "drink", "tap", "water."]}, {"id": 11, "words": ["Strangely,", "they", "claim", "sun", "exposure", "can", "cause", "cancer."]}, {"id": 12, "words": ["He", "introduced", "her", "as", "the", "decorator."]}, {"id": 13, "words": ["I", "don't", "mind", "if", "we", "stay", "home", "tonight."]}, {"id": 14, "words": ["Do", "not", "judge", "by", "appearances."]}, {"id": 15, "words": ["Anyone", "who", "would", "do", "this", "must", "be", "incredibly", "giving."]}, {"id": 16, "words": ["She", "abandoned", "those", "ways", "years", "ago."]}, {"id": 17, "words": ["The", "instructor", "said", "she", "was", "not", "smart", "enough."]}, {"id": 18, "words": ["Women", "can", "be", "intellectual", "as", "well", "as", "beautiful."]}, {"id": 19, "words": ["The", "necklace", "is", "from", "a", "small", "village."]}, {"id": 20, "words": ["How", "could", "you", "do", "such", "a", "thing?"]}];
+const state=sentences.map(s=>s.words.map(()=>false));
+const total=sentences.reduce((n,s)=>n+s.words.length,0);
+const root=document.getElementById('sentences');
+const safe=s=>String(s).replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+root.innerHTML=sentences.map((s,i)=>`<article class="sentence"><div class="sentence-head"><b>Sentence ${s.id}</b><span class="count" id="count-${i}">0 / ${s.words.length} correct · 0%</span></div><div class="words">${s.words.map((w,j)=>`<button type="button" class="word" data-i="${i}" data-j="${j}" aria-label="Sentence ${s.id}, word ${j+1}, ${safe(w)}: incorrect" aria-pressed="false">${safe(w)}</button>`).join('')}</div></article>`).join('');
+document.getElementById('totalPossible').textContent=`${sentences.length} sentences · ${total} words`;
+const reviewed=new Set();
+function update(){let correct=0;state.forEach((row,i)=>{let n=row.filter(Boolean).length;correct+=n;document.getElementById('count-'+i).textContent=`${n} / ${row.length} correct · ${Math.round(100*n/row.length)}%`});document.getElementById('correct').textContent=`${correct} / ${total}`;document.getElementById('score').textContent=`${(correct/total*100).toFixed(1)}%`;document.getElementById('notCorrect').textContent=total-correct;document.getElementById('completed').textContent=`${reviewed.size} / ${sentences.length}`;document.getElementById('bar').style.width=`${correct/total*100}%`}
+root.addEventListener('click',e=>{let b=e.target.closest('button[data-i]');if(!b)return;let i=+b.dataset.i,j=+b.dataset.j;state[i][j]=!state[i][j];reviewed.add(i);b.setAttribute('aria-pressed',String(state[i][j]));b.setAttribute('aria-label',`Sentence ${i+1}, word ${j+1}, ${sentences[i].words[j]}: ${state[i][j]?'correct':'incorrect'}`);update()});
+document.getElementById('reset').addEventListener('click',()=>{if(!confirm('Clear all word scores?'))return;state.forEach(a=>a.fill(false));reviewed.clear();root.querySelectorAll('.word').forEach(b=>{b.setAttribute('aria-pressed','false');b.setAttribute('aria-label',`Sentence ${+b.dataset.i+1}, word ${+b.dataset.j+1}, ${sentences[+b.dataset.i].words[+b.dataset.j]}: incorrect`)});update()});
+document.getElementById('export').addEventListener('click',()=>{
+  const reportWindow=window.open('','_blank');
+  if(!reportWindow){alert('Please allow pop-ups for this page to view your scoring report.');return;}
+  const totalCorrect=state.flat().filter(Boolean).length;
+  const pct=(100*totalCorrect/total).toFixed(1);
+  const escapeText=s=>String(s).replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+  const rows=sentences.map((s,i)=>{
+    const n=state[i].filter(Boolean).length;
+    const marked=s.words.filter((_,j)=>state[i][j]);
+    const sentence=s.words.map((w,j)=>`<span class="word ${state[i][j]?'yes':'no'}">${escapeText(w)}</span>`).join(' ');
+    return `<section class="sentence"><div class="heading"><strong>Sentence ${s.id}</strong><strong>${n} / ${s.words.length} &nbsp;·&nbsp; ${(100*n/s.words.length).toFixed(1)}%</strong></div><div class="transcript">${sentence}</div><p class="marked"><b>Words marked correct:</b> ${marked.length?marked.map(escapeText).join(', '):'<em>None</em>'}</p></section>`;
+  }).join('');
+  const doc=`<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Case 1 - Right Aided Condition — Scoring report</title><style>
+  *{box-sizing:border-box}body{font:15px/1.5 system-ui,-apple-system,Segoe UI,sans-serif;color:#18283d;background:#f5f8fc;margin:0}.wrap{max-width:900px;margin:28px auto;padding:0 20px}.top{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}h1{font-size:1.65rem;margin:0}.subtitle{color:#617184;margin:3px 0 17px}.summary{display:flex;gap:18px;background:#e9f3ff;border:1px solid #bdd6f2;padding:18px 22px;border-radius:12px;margin-bottom:18px;align-items:center;flex-wrap:wrap}.percent{font-size:2rem;font-weight:750;color:#185c99}.summary p{margin:0}.sentence{background:white;border:1px solid #dae3ec;padding:15px 19px;border-radius:11px;margin:11px 0;break-inside:avoid}.heading{display:flex;justify-content:space-between;gap:10px;margin-bottom:10px}.transcript{line-height:2.3}.word{display:inline-block;padding:1px 5px;border-radius:5px;margin:1px 1px 1px 0}.yes{background:#d7f3e5;color:#075738;font-weight:700}.no{color:#737e8b;background:#f0f3f6}.marked{color:#4f6070;font-size:.86rem;margin:9px 0 0}button{cursor:pointer;background:#195d9d;color:white;border:0;padding:10px 15px;border-radius:8px;font:inherit}.note{font-size:.8rem;color:#607085}@media print{body{background:white}.wrap{max-width:100%;margin:0;padding:0}.print-control{display:none}.sentence{border:1px solid #ccc;margin:9px 0;padding:10px 13px} .yes{-webkit-print-color-adjust:exact;print-color-adjust:exact}.summary{-webkit-print-color-adjust:exact;print-color-adjust:exact}} 
+.reference-note{margin:3px 4px 12px;padding:9px;background:#f9fcff;border:1px solid #b7c8e6;border-radius:7px;color:#243e60;font-size:11px;line-height:1.5}
+.list-label{display:block;margin:3px 5px;font-size:11px;color:#243e60}
+.wordlist-select{width:calc(100% - 10px);margin:0 5px 4px;padding:7px 8px;font-size:12px;border-radius:6px;border:1px solid #9bb4dc;background:#fff;color:#1a3558}
+.video-wrap{position:relative;width:min(100%,290px);margin:auto;aspect-ratio:9/16;background:#07111d;border-radius:9px;overflow:hidden}
+.video-wrap .video{width:100%;height:100%;max-height:100%;margin:0}
+.video-locked{position:absolute;inset:0;background:#0b1929cf;color:#fff;display:flex;align-items:center;justify-content:center;flex-direction:column;text-align:center;gap:8px;padding:14px;pointer-events:all}
+.video-locked[hidden]{display:none!important}
+.video-locked span{font-size:12px;color:#d8e7f7}
+.lock-state{padding:9px 11px;border-radius:7px;background:#fff3de;color:#714c09;font-size:12px;font-weight:650;margin:10px 0}
+.lock-state.ready{background:#e0f5e9;color:#09613b}
+.enter-settings{display:block;width:calc(100% - 10px);margin:14px 5px 6px;padding:11px 8px;border:0;border-radius:7px;background:#1b5da1;color:white;font-weight:800;letter-spacing:.08em;cursor:pointer}.enter-settings:hover{background:#12477e}.enter-settings:focus-visible{outline:3px solid #e7ac40;outline-offset:2px}.settings-feedback{margin:4px 5px 10px;font-size:11px;line-height:1.45;color:#694c13}.settings-feedback.accepted{color:#09613b;font-weight:700}
+</style></head><body><main class="wrap"><div class="top"><h1>Sentence Recognition — Scoring Report</h1><button class="print-control" onclick="window.print()">Print / Save as PDF</button></div><p class="subtitle">Case 1 - Right Aided Condition · List 5 · Student scoring summary</p><div class="summary"><div class="percent">${pct}%</div><div><strong>${totalCorrect} of ${total} words marked correct</strong><p>${sentences.length} sentences · Unmarked words counted incorrect</p></div></div><p class="note">Green = marked correct. Gray = not marked correct. Sentence percentages and overall percentage include all words.</p>${rows}<p class="note">This is a snapshot of the scores when the report was opened. Scores are not submitted automatically.</p></main></body></html>`;
+  reportWindow.document.open();reportWindow.document.write(doc);reportWindow.document.close();reportWindow.focus();
+});
+update();
+</script></body></html>
